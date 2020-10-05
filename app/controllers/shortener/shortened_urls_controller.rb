@@ -8,22 +8,13 @@ class Shortener::ShortenedUrlsController < ActionController::Base
     sl = ::Shortener::ShortenedUrl.find_by_unique_key(token)
 
     if sl
-      # don't want to wait for the increment to happen, make it snappy!
-      # this is the place to enhance the metrics captured
-      # for the system. You could log the request origin
-      # browser type, ip address etc.
-      # Thread.new do
-      #  sl.increment!(:use_count)
-      #  ActiveRecord::Base.connection.close
-      # end
-      # do a 301 redirect to the destination url
+      # Perform a 301 redirect to the destination url, while persisting allowed URL parameters
       redirect_to add_params(
         sl.url,
-        request.params.except(:id, :a, :plea, :action, :controller)
+        request.params.slice(*allowed_params)
       ), status: :moved_permanently
     else
-      # if we don't find the shortened link, redirect to the root
-      # make this configurable in future versions
+      # If we don't find the shortened link, redirect to the root
       redirect_to "/"
     end
   end
@@ -37,5 +28,9 @@ class Shortener::ShortenedUrlsController < ActionController::Base
     uri.query = URI.encode_www_form(url_params)
 
     uri.to_s
+  end
+
+  def allowed_params
+    [:utm_source, :utm_medium, :utm_campaign, :utm_term, :utm_content]
   end
 end
