@@ -66,6 +66,7 @@ class Shortener::ShortenedUrl < ActiveRecord::Base
       self.unique_key = generate_unique_key
       super()
     rescue ActiveRecord::RecordNotUnique, ActiveRecord::StatementInvalid => err
+      logger.info("Shortener gem attempted to generate a unique key and raised the following err: #{err}")
       if (count +=1) < 10
         logger.info("retrying with different unique key")
         retry
