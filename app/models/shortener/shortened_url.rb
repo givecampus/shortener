@@ -1,4 +1,5 @@
 class Shortener::ShortenedUrl < ActiveRecord::Base
+  puts "testing the local integration"
 
   URL_PROTOCOL_HTTP = "http://"
   REGEX_LINK_HAS_PROTOCOL = Regexp.new('\Ahttp:\/\/|\Ahttps:\/\/', Regexp::IGNORECASE)
@@ -14,6 +15,10 @@ class Shortener::ShortenedUrl < ActiveRecord::Base
     return nil if url.blank?
     url = URL_PROTOCOL_HTTP + url.strip unless url =~ REGEX_LINK_HAS_PROTOCOL
     URI.parse(url).normalize.to_s
+  end
+
+  def self.nicks_test
+    'testing'
   end
 
   # generate a shortened link from a url
