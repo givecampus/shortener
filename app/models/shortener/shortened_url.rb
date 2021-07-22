@@ -44,11 +44,9 @@ class Shortener::ShortenedUrl < ActiveRecord::Base
 
   private
 
-  CREATE_METHOD_NAME = "_create_record"
-
   # we'll rely on the DB to make sure the unique key is really unique.
   # if it isn't unique, the unique index will catch this and raise an error
-  define_method CREATE_METHOD_NAME do
+  def _create_record
     count = 0
     begin
       self.unique_key = generate_unique_key
