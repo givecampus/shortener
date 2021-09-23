@@ -11,7 +11,7 @@ class Shortener::ShortenedUrlsController < ActionController::Base
       # Perform a 301 redirect to the destination url, while persisting allowed URL parameters
       redirect_to add_params(
         sl.url,
-        request.params.slice(*allowed_params)
+        request.params.except(:id, :a, :plea, :action, :controller)
       ), status: :moved_permanently
     else
       # If we don't find the shortened link, redirect to the root
@@ -28,9 +28,5 @@ class Shortener::ShortenedUrlsController < ActionController::Base
     uri.query = URI.encode_www_form(url_params)
 
     uri.to_s
-  end
-
-  def allowed_params
-    [:utm_source, :utm_medium, :utm_campaign, :utm_term, :utm_content]
   end
 end
