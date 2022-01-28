@@ -49,7 +49,9 @@ class Shortener::ShortenedUrl < ActiveRecord::Base
   def _create_record
     count = 0
     begin
-      self.unique_key = generate_unique_key
+      begin
+        self.unique_key = generate_unique_key
+      end while self.class.unscoped.exists?(unique_key: unique_key)
       super()
     rescue ActiveRecord::RecordNotUnique, ActiveRecord::StatementInvalid => err
       logger.info("Shortener gem attempted to generate a unique key and raised the following err: #{err}")
